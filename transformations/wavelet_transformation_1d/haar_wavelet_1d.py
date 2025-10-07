@@ -1,9 +1,4 @@
-import numpy as np
-
-from utility import utils as u
 from utility.templates.base_functions import DiscreteBaseFunction1D
-
-u.latex_font()
 
 
 class HaarWavelet(DiscreteBaseFunction1D):
@@ -43,17 +38,6 @@ class HaarWavelet(DiscreteBaseFunction1D):
                 values[(2 * self.shift + 1) * level_offset + i] = -scale
             self._values = values
 
-        # if order != 0:
-        #     values = u.affine_transform(self.values, lower=-1 - 3.5 * order, upper=1 - 3.5 * order)
-        # else:
-        #     v = -0.5
-        #     values = [v for _ in range(2 ** self.n)]
-        # print(f"\\addplot[blue,thick,const plot] coordinates ""{")
-        # for i, val in enumerate(values):
-        #     print(f"({(i * 0.0625).__round__(4)},{val.__round__(3)})")
-        # print(f"({(8 * 0.0625).__round__(4)},{(values[-1]).__round__(3)})")
-        # print("}; %"f" {order}")
-
     @property
     def name(self) -> str:
         return "Wavelet"
@@ -70,20 +54,3 @@ class HaarWavelet(DiscreteBaseFunction1D):
     @property
     def max_scale(self) -> float:
         return 2 ** (self.n / 2 - 1 / 2) + 1
-
-# SHIFT LEVEL VERSION
-# n = 2
-# helena = HaarWavelet(0, 0, n)
-# helena.plot()
-# print(0,0)
-# for i in range(1, n + 1):  # level=0,1,...,n, but 0 is separate
-#     for j in range(2 ** (i - 1)):  # shift: 0,...,2^(level-1)
-#         helena = HaarWavelet(0,n,level=i, shift=j)
-#         print(i,j)
-#         helena.plot()
-#
-# INDEX VERSION
-# n = 3
-# for i in range(2 ** n):
-#     helena = HaarWavelet(i, n)
-#     helena.plot()

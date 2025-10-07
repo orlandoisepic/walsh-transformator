@@ -1,18 +1,14 @@
 import numpy as np
-from numpy import ndarray
 
 import utility.utils as u
 from utility.templates.base_functions import DiscreteBaseFunction2D
 from utility.templates.base_transformations import Transformation2D
-from utility.test_functions_2d import QuadraticMax
 
 if __name__ == "__main__":  # "if" here so that import is correct depending on cli or file execution
     from walsh_function_2d import WalshFunction2D
 else:
     from .walsh_function_2d import WalshFunction2D
 from utility.templates.test_functions import TestFunction
-
-u.latex_font()
 
 
 class WalshTransformation2D(Transformation2D):
@@ -48,14 +44,10 @@ class WalshTransformation2D(Transformation2D):
         else:
             dyadic_order = u.sequency_to_dyadic(n)
 
-            # exp_boundaries = u.calculate_boundaries_exp(self.boundary_n)
-            # exp_boundary_order: np.ndarray = u.get_order_from_bounds(exp_boundaries)
             base_functions: list[list[WalshFunction2D]] = [
                 # To use a different order, use order[i] and order[j] instead of i and j here
-                #[WalshFunction2D(exp_boundary_order[i], exp_boundary_order[j], n)
-                # [WalshFunction2D(cos_boundary_order[i], cos_boundary_order[j], n)
                 [WalshFunction2D(dyadic_order[i], dyadic_order[j], n)
-                #[WalshFunction2D(i, j, n)
+                 # [WalshFunction2D(i, j, n) # Sequential order
                  for j in range(2 ** n)]
                 for i in range(2 ** n)
             ]
@@ -120,7 +112,6 @@ class WalshTransformation2D(Transformation2D):
                 # Get coefficients of y-base-functions
                 for j, phi in enumerate(y_base):
                     coef = float(np.sum(np.array(phi.values) * np.array(integrals)))
-                    # print(j, walcoef)
                     y_coef.append(abs(coef))
 
                 ymin, ymin2, ymax2, ymax = np.partition(y_coef, [0, 1, -2, -1])[[0, 1, -2, -1]]
@@ -132,15 +123,3 @@ class WalshTransformation2D(Transformation2D):
                     for y in range(len(y_order)):
                         y_order[y] = int(y_order[y])
                     index_y = -1
-
-# f = QuadraticMax()
-# n = 3
-# walter = WalshTransformation2D(n, f)
-# walter.plot_base_matrix()
-# walcoef = walter.get_coefficients_integration()
-# #print(min(abs(walcoef[walcoef > 0])), max(abs(walcoef)))
-# t_vals = walter.sample_transform(walcoef)
-# f_vals = f.sample()
-# f.plot()
-# #walter.plot_coefficients(walcoef)
-# walter.plot_transformation(t_vals, f_vals)

@@ -197,9 +197,7 @@ def plot_helper(input: list[str]) -> bool:
                                                      vmax=vmax)
             ims.append(im)
             axs.append(ax)
-            # TODO is this helpful? would need to be moved to a different function / elif, as plots are shown only after ifs
-            # transformer.plot_error_relative(transform_values, function_values,
-            #                                 subtitle=subtitle, cli=True, fig=fig, index=i + 1)
+
     elif cmd == "base" or cmd == "b":
         outer_grid = fig.add_gridspec(1, 3)
         for i, transformation in enumerate(transformations):
@@ -424,7 +422,7 @@ if __name__ == "__main__":
             sys.exit("Function must be specified in image map.")
         print(helper.sol_string + f"Image: {pearl.green(f.name_cli)}")
         dimensionality = 2  # Set dimensionality explicitly to avoid "1D" image and connected values
-        # boundary_n is required, but will not be used
+        # boundary_n is required but will not be used
         transformations_to_initialize = [
             (WalshTransformation2D, n, f, boundary_n),
             (WaveletTransformation2D, n, f, boundary_n),

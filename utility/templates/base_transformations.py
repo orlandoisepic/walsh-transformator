@@ -2,21 +2,17 @@ from abc import ABC, abstractmethod
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import gridspec
 from matplotlib.axes import Axes
 from matplotlib.collections import LineCollection
 from matplotlib.colors import LogNorm
 from matplotlib.figure import Figure
 from matplotlib.gridspec import GridSpec
 from matplotlib.image import AxesImage
-from matplotlib.lines import Line2D
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from utility import utils as u
 from utility.templates.base_functions import DiscreteBaseFunction1D, DiscreteBaseFunction2D
 from utility.templates.test_functions import TestFunction, Image, TestFunctionType, TestFunction2D, TestFunction1D
-import inspect
 
 
 class Transformation(ABC):
@@ -214,21 +210,6 @@ class Transformation(ABC):
         pass
 
     @abstractmethod
-    def plot_error_relative(self, transform_values: np.ndarray, function_values: np.ndarray,
-                            subtitle: str = "") -> None:
-        """
-        Plots the relative error of the transformation with the given coefficients and the test function.
-        This opens a window with the plot.
-        :param transform_values: The values of the Walsh transformation at the sample points.
-        :param function_values: The values of the test function at the sample points.
-        :param subtitle: A subtitle to be displayed on the plot,
-        e.g., for information about the transformation or the test function, et cetera.
-        By default, no subtitle is displayed.
-        :return: None
-        """
-        pass
-
-    @abstractmethod
     def plot_transformation(self, transform_values: np.ndarray, function_values: np.ndarray,
                             subtitle: str = "", original: bool = False,
                             cli: bool = False, fig: Figure = None, index: int = -1,
@@ -378,14 +359,8 @@ class Transformation1D(Transformation):
         y = [self.base_functions[i].values for i in range(2 ** self.n)]
         if not cli:
             plt.figure(figsize=(6, 6))
-            # plt.figure(figsize=(6,6),frameon=False)
             plt.imshow(y, cmap="gray", aspect="auto")
-            # plt.axis("off")
-            # plt.colorbar(label="Value")
             plt.title(title)
-            # plt.xticks([])
-            # plt.yticks([])
-            # plt.savefig(f"walsh_base{self.n}.pdf", dpi=500,bbox_inches="tight",pad_inches=0.01,)
             plt.show()
         # cli
         else:
@@ -404,7 +379,7 @@ class Transformation1D(Transformation):
 
         # This might differ per transformation,
         # depending on whether it uses base functions with 2^boundary_n or 2^n intervals.
-        length: int = len(self.base_functions[0].values)
+        length: int = 2 ** max(self.n, self.boundary_n)
         # Since the values of the base function differ in each interval, split the integral up into all intervals
         # Recomputing the interval borders is probably better than storing them forever
         for i in range(length):
@@ -476,19 +451,6 @@ class Transformation1D(Transformation):
             return im, ax
         return None, None
 
-    def plot_error_relative(self, transform_values: np.ndarray, function_values: np.ndarray,
-                            subtitle: str = "", cli: bool = False, ax: Axes = None) -> None:
-        # Only append a new line if the subtitle is not empty.
-        subtitle = "\n" + subtitle if subtitle else ""
-
-        x = np.linspace(0, 1, transform_values.size)
-        y = abs((transform_values - function_values) + 1e-16) / abs(function_values + 1e-16)
-        plt.plot(x, y)
-        plt.yscale("log")
-        plt.title(f"Relative error of {self.name} transformation of $\\displaystyle {self.function.name}$." + subtitle)
-        plt.show()
-        # TODO adapt for cli
-
     def plot_transformation(self, transform_values: np.ndarray, function_values: np.ndarray,
                             subtitle: str = "", original: bool = False,
                             cli: bool = False, fig: Figure = None, index: int = -1,
@@ -502,10 +464,7 @@ class Transformation1D(Transformation):
             x = np.linspace(0, 1, transform_values.size)
             plt.plot(x, transform_values, color="blue")
             plt.plot(x, function_values, color="orange")
-            # plt.xlim(-0.1, 1.1)
-            # plt.ylim(-0.1, 1.1)
             plt.title(title)
-            # plt.savefig(f"paltrafo.pdf", dpi=400, pad_inches=0.01, )
             plt.show()
         # cli
         else:
@@ -529,11 +488,11 @@ class Transformation1D(Transformation):
     def plot_coefficients(self, coefficients: np.ndarray, subtitle: str = "", sorted: bool = False,
                           first_n: int = 0, cli: bool = False, fig: Figure = None, index: int = -1,
                           vmin: float = -1, vmax: float = -1) -> tuple[AxesImage, Axes] | tuple[None, None]:
-        # Do not update coefficients[] object
         subtitle = "\n" + subtitle if subtitle else ""
         title: str = (f"Coefficients of {self.name} transformation of\n"
                       f"$\\displaystyle {self.function.name}$\n"
                       f"with {2 ** self.n} {self.name} functions" + subtitle)
+        # Do not update coefficients[] object
         coefficients_to_plot = coefficients.copy()
         if not cli:
             plt.figure(figsize=(4.5, 4.5), constrained_layout=True)
@@ -545,38 +504,13 @@ class Transformation1D(Transformation):
                 # Sort coefficients in descending order by absolute value
                 coefficients_to_plot[::-1] = np.sort(abs(np.array(coefficients_to_plot)))
                 subtitle += "\nsorted in descending order"
-            x = np.linspace(1, coefficients_to_plot.shape[0] + 1, coefficients_to_plot.shape[0], endpoint=False)
-            y = (np.e - 1) / x ** 2
-            plt.plot(x, y, color="gray")
 
-            x = np.linspace(1, coefficients_to_plot.shape[0] + 1, coefficients_to_plot.shape[0], endpoint=False)
-            y = (np.e - 1) / x
-            plt.plot(x, y, color="gray")
+            plt.plot(range(1, coefficients_to_plot.shape[0] + 1), abs(coefficients_to_plot), "--",
+                     color="blue", marker="o")
 
-            x = np.linspace(1, coefficients_to_plot.shape[0] + 1, coefficients_to_plot.shape[0], endpoint=False)
-            y = (np.e - 1) / x ** 3
-            plt.plot(x, y, color="gray")
-            # cos_bounds= u.calculate_boundaries_cos(self.n)
-            # plt.plot(cos_bounds,color="red")
-            # lab =1
-            # for j in [2,4,8,16,32,64,128,256]:
-            plt.plot(range(1, coefficients_to_plot.shape[0] + 1), abs(coefficients_to_plot), "--", color="blue",
-                     marker="o", label="Koeffizienten")
-
-            # plt.axhline(y=0.00017330938025979237, color='red', linestyle='--', linewidth=1.5)
-            # plt.axhline(y=1.1377132123902012e-07, color='green', linestyle='--', linewidth=1.5)
-            # for i in [2,4,8,16,32,64,128,256]:
-            #     if i <= j:
-            #         plt.axvline(x=i, color="gray", linestyle="dashed", linewidth=1.5)
             plt.yscale("log")
             plt.xscale("log")
             plt.title(title)
-            # lab += 1
-            # These limits are good for x^2
-            # plt.xlim(8.5e-1, 36)
-            # plt.ylim(9.14823772291129e-14 - 6e-14, 1.718281828459045 + 3)
-            # plt.savefig(f"expcoscoef.pdf", dpi=400, pad_inches=0.01)
-            # plt.tight_layout()
             plt.show()
         # cli
         else:
@@ -674,7 +608,7 @@ class Transformation1D(Transformation):
 
 class Transformation2D(Transformation):
     """
-    TODO add docstring
+    An abstract base class for two-dimensional transformations.
     """
 
     @abstractmethod
@@ -730,7 +664,7 @@ class Transformation2D(Transformation):
                     ax.set_xticks([])
                     ax.set_yticks([])
             # Maybe add a colorbar? The bar is not that interesting when there are only two values, though.
-            # plt.savefig(f"waveletbase3.pdf", dpi=400, bbox_inches="tight", pad_inches=0.01)
+            plt.title(title)
             plt.tight_layout()
             plt.show()
         # cli
@@ -824,7 +758,6 @@ class Transformation2D(Transformation):
                 plt.axis('off')
                 plt.title(title)
                 plt.tight_layout()
-                # plt.savefig("cos" + subtitle + ".png", bbox_inches="tight", pad_inches=0)
                 plt.show()
 
                 # True image
@@ -845,14 +778,12 @@ class Transformation2D(Transformation):
                 X, Y = np.meshgrid(x, y)
 
                 # Create a 3D plot for transformation
-                # fig = plt.figure(figsize=(6, 6))
                 fig = plt.figure()
                 ax = fig.add_subplot(111, projection='3d')
                 ax.plot_surface(X, Y, transformation_values, cmap='inferno')
                 # Rotate origin to face viewer
                 ax.view_init(elev=30, azim=-135)
                 plt.title(title)
-                # plt.savefig("cosine_x22d.pdf", dpi=400,bbox_inches="tight",pad_inches=0.01)
                 plt.show()
 
                 if original:
@@ -888,7 +819,9 @@ class Transformation2D(Transformation):
                           cli: bool = False, fig: Figure = None, index: int = -1,
                           vmin: int = -1, vmax: int = -1) -> tuple[AxesImage, Axes] | tuple[None, None]:
         subtitle = "\n" + subtitle if subtitle else ""
-
+        title: str = (f"Coefficients of {self.name} transformation of\n"
+                      f"$\\displaystyle {self.function.name}$\n"
+                      f"with {2 ** self.n} {self.name} functions per dimension" + subtitle)
         coefficients_to_plot = coefficients.copy()  # do not modify the original coefficients[]
         if not cli:
             fig, ax = plt.subplots(figsize=(4.5, 4.5), constrained_layout=False)
@@ -912,11 +845,7 @@ class Transformation2D(Transformation):
                 segments = u.boundary_segments_from_mask(mask)
                 lc = LineCollection(segments, colors='black', linewidths=1.5, zorder=5)
                 ax.add_collection(lc)
-                im = ax.imshow(abs(coefficients_to_plot.T), cmap="inferno",
-                               norm=LogNorm(
-                                   #    vmin=3.2526065174565133e-16 - 3e-16, vmax=0.9993055555555554 + 0.1  # TaylorCos
-                                   vmin=1.8778990229281062e-06, vmax=123.49873352050781
-                               ))
+                im = ax.imshow(abs(coefficients_to_plot.T), cmap="inferno", norm=LogNorm())
                 # This is for transparent discarded sparse coef
                 if "sparse" in subtitle:
                     original_coefficients = abs(
@@ -924,12 +853,7 @@ class Transformation2D(Transformation):
                     original_coefficients[~mask] = np.nan
                     cmap = plt.get_cmap("inferno").copy()
                     cmap.set_bad(alpha=0.0)
-                    ax.imshow(original_coefficients, cmap=cmap, alpha=0.65, norm=LogNorm(
-                        # vmin=3.2526065174565133e-16 - 3e-16, vmax=0.9993055555555554 + 0.1  # TaylorCos
-                        # vmin=1.920890529971686e-12, vmax=0.4396774653226998 # Cos
-                        # vmin=1.196959198423997e-16, vmax=1.6371253500460854  # ExpCos
-                        vmin=1.8778990229281062e-06, vmax=123.49873352050781
-                    ))
+                    ax.imshow(original_coefficients, cmap=cmap, alpha=0.65, norm=LogNorm())
                 ax.set_xlabel("$x$")
                 ax.set_ylabel("$y$")
                 divider = make_axes_locatable(ax)
@@ -937,11 +861,8 @@ class Transformation2D(Transformation):
                 cbar = fig.colorbar(im, cax=cax)
                 cbar.ax.tick_params(labelsize=12)
                 fig.subplots_adjust(right=0.89)
-            title: str = (f"Coefficients of {self.name} transformation of\n"
-                          f"$\\displaystyle {self.function.name}$\n"
-                          f"with {2 ** self.n} {self.name} functions per dimension" + subtitle)
 
-            #fig.suptitle(title)
+            fig.suptitle(title)
             plt.savefig(f"wav_coef{subtitle}.pdf", dpi=400, pad_inches=0.01)
             plt.show()
         # cli
@@ -962,12 +883,10 @@ class Transformation2D(Transformation):
                 if first_n > 0:
                     coefficients_to_plot = coefficients_to_plot[:first_n, :first_n]
                     subtitle += f"\nshowing {first_n} coefficients per dimension"
-                    # TODO here .T is needed to show coefficients properly
+                    # Here, .T is needed to show coefficients properly
                 im = ax.imshow(abs(coefficients_to_plot.T), cmap="inferno", norm=LogNorm(vmin=vmin, vmax=vmax))
 
-            ax.set_title((f"Coefficients of {self.name} transformation of\n"
-                          f"$\\displaystyle {self.function.name}$\n"
-                          f"with {2 ** self.n} {self.name} functions per dimension" + subtitle))
+            ax.set_title(title)
 
             return im, ax
         return None, None
@@ -1045,35 +964,6 @@ class Transformation2D(Transformation):
                 return im, ax
         return None, None
 
-    def plot_error_relative(self, transform_values: np.ndarray, function_values: np.ndarray,
-                            subtitle: str = "",
-                            cli: bool = False, fig: Figure = None, index: int = -1) -> None:
-        print("Currently under construction.")
-        # TODO make this method work correctly
-        if self.type == TestFunctionType.IMAGE:
-            return
-        elif self.type == TestFunctionType.FUNCTION:
-            return
-        x = np.linspace(0, 1, transform_values.shape[0])
-        y = np.linspace(0, 1, transform_values.shape[1])
-        X, Y = np.meshgrid(x, y)
-
-        Z = abs((transform_values - function_values)) / abs(function_values + 1e-16)
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-
-        ax.plot_surface(X, Y, Z, cmap='inferno')
-        ax.set_zscale("log")
-
-        # Sets the origin to appear at the front
-        ax.view_init(elev=30, azim=-135)
-        plt.title(f"Relative error of {self.name} transformation of $\\displaystyle {self.function.name}$\n"
-                  f"with {2 ** self.n} {self.name} functions per dimension." + subtitle)
-
-        plt.show()
-        # TODO adapt for cli
-
     def evaluate(self, coefficients: np.ndarray, *point: float | tuple[float, float]) -> float | np.ndarray:
         if len(point) != 2:
             raise ValueError("Point must be two-dimensional")
@@ -1097,7 +987,7 @@ class Transformation2D(Transformation):
             total: float = 0
 
             h: float = 1 / (2 ** self.boundary_n)
-            scale: int = u.get_scale(self.boundary_n)  # a larger scale means more accurate approximation
+            scale: int = u.get_scale(self.boundary_n)  # A larger scale means more accurate approximation
             min_area: float = (h * h) / (2 * scale)
             max_depth: int = int(np.log2(scale) / 2)
             epsilon: float = (np.max(function_values) - np.min(function_values)) * 1e-6
@@ -1109,11 +999,10 @@ class Transformation2D(Transformation):
                     y_0 = y * h
                     y_1 = (y + 1) * h
                     c: float = transformation_values[y, x]
-                    # global_eps, min_area, max_depth,
                     total += self.adaptive_rect_l1_fast(x_0, x_1, y_0, y_1, c,
                                                         epsilon=epsilon, min_area=min_area, max_depth=max_depth)
         elif self.type == TestFunctionType.IMAGE:
-            # For an image, simply subtract image values from function values and take the absolute value
+            # For an image, subtract image values from function values and take the absolute value
             total: float = np.sum(np.abs(transformation_values - function_values)) / (2 ** (2 * self.n))
         # else-case cannot happen
 
@@ -1256,7 +1145,7 @@ class Transformation2D(Transformation):
                 transformation_values = self.sample_transform(coefficients, samples=samples)
                 function_values = self.function.sample(samples=2 ** self.boundary_n)
             difference = abs(transformation_values - function_values)
-            return np.max(difference)  # np max looks at the entire matrix, python max sees only sub-arrays
+            return np.max(difference)  # np.max looks at the entire matrix, python max sees only sub-arrays
         else:  # This cannot happen
             return None
 

@@ -64,13 +64,13 @@ class CosineXSquare(TestFunction2D):
         return value
 
     def evaluate_integral_squared(self, x: float | np.ndarray, y: float) -> float | np.ndarray:
-        z = (2.0 * x) / np.sqrt(np.pi)
+        z = (2 * x) / np.sqrt(np.pi)
         S, C = spc.fresnel(z)
 
-        fresnel_term = (1.0 / 8.0) * np.sqrt(np.pi) * (C * np.sin(2.0 * y) + S * np.cos(2.0 * y))
-        poly_term = (x ** 3) / 6.0 + (x * y) / 2.0
+        fresnel_term = (1 / 8) * np.sqrt(np.pi) * (C * np.sin(2 * y) + S * np.cos(2 * y))
+        polynomial_term = (x ** 3) / 6 + (x * y) / 2
 
-        return fresnel_term + poly_term
+        return fresnel_term + polynomial_term
 
 
 class QuadraticAdd(TestFunction2D):
@@ -84,7 +84,6 @@ class QuadraticAdd(TestFunction2D):
         return (1 / 4) * (x ** 2) * (y ** 2) + (1 / 2) * (x ** 2) * y
 
     def evaluate_integral_squared(self, x: float, y: float) -> float:
-        # return (1 / 9) * (x ** 3) * (y ** 3) + (1 / 3) * (x ** 3) * (y ** 2) + (1 / 3) * (x ** 3)
         return (1 / 9) * (x ** 3) * (y + 1) ** 3
 
 
@@ -178,7 +177,7 @@ class ExponentialMult(TestFunction2D):
         return dblquad(lambda v, u: np.exp(u * v), 0, x, lambda u: 0, lambda u: y)[0]
 
     def evaluate_integral_squared(self, x: float, y: float) -> float:
-        return
+        return dblquad(lambda v, u: np.exp(2 * u * v), 0, x, lambda u: 0, lambda u: y)[0]
 
 
 class Rational(TestFunction2D):

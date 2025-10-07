@@ -321,10 +321,6 @@ def cli_help() -> None:
           f"\n"
           f"To exit this interface, use \"exit\".")
 
-    # TODO: plot base matrix, i.e., walsh matrix, wavelet matrix, ...
-    # TODO: update print bounds
-    # TODO: new compare function: two or three transforms?
-
 
 def maximum_error(transformations: dict[str, Transformation], function_values: dict[str:np.ndarray],
                   values: dict[str, np.ndarray], modified: bool, modified_values: dict[str, np.ndarray]) -> float:

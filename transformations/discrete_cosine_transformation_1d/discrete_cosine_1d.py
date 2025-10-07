@@ -1,6 +1,5 @@
 import numpy as np
 
-import utility.utils as u
 from utility.templates.base_functions import DiscreteBaseFunction1D
 
 

@@ -1,5 +1,4 @@
 import numpy as np
-from numpy import ndarray, dtype, float64
 
 from transformations.discrete_cosine_transformation_1d.discrete_cosine_1d import DiscreteCosineFunction
 from utility.templates.base_functions import DiscreteBaseFunction2D
@@ -43,8 +42,3 @@ class DiscreteCosineFunction2D(DiscreteBaseFunction2D):
     def max_scale(self) -> float:
         return self._max_scale
 
-# n = 3
-# for i in range(2 ** n):
-#     for j in range(2 ** n):
-#         keira = DiscreteCosineFunction2D(i, j, n)
-#         keira.plot()
