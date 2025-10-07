@@ -220,3 +220,9 @@ docker/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# ====== project specific files
+transformations/walsh_transformation_1d/experimental_walsh_function.py
+transformations/walsh_transformation_1d/experimental_walsh_transform.py
+transformations/walsh_transformation_2d/experimental_walsh_transformation2d.py
