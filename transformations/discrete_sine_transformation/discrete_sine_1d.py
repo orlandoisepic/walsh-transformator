@@ -1,6 +1,5 @@
 import numpy as np
 
-import utility.utils as u
 from utility.templates.base_functions import DiscreteBaseFunction1D
 
 
@@ -42,9 +41,3 @@ class DiscreteSineFunction(DiscreteBaseFunction1D):
     @property
     def max_scale(self) -> float:
         return 2.61
-
-
-# n = 6
-# for i in range(2 ** n):
-#     sally = DiscreteSineFunction(i, n)
-#     sally.plot()

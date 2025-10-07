@@ -1,12 +1,7 @@
 import numpy as np
 
 from transformations.walsh_transformation_1d.walsh_function_1d import WalshFunction
-import matplotlib.pyplot as plt
-import utility.utils as u
 from utility.templates.base_functions import DiscreteBaseFunction2D
-
-u.latex_font()
-
 
 class WalshFunction2D(DiscreteBaseFunction2D):
 
@@ -40,7 +35,6 @@ class WalshFunction2D(DiscreteBaseFunction2D):
     def plot_title(self) -> str:
         return f"Walsh function of order {self.order_x} in $x$ and {self.order_y} in $y$ out of {2 ** self.n}."
 
-
     @property
     def max_scale(self) -> float:
         return 1
@@ -56,11 +50,3 @@ class WalshFunction2D(DiscreteBaseFunction2D):
         :return: The value of the integral of the squared base function on the interval [0,1]ᵈ.
         """
         return 1
-
-#
-#
-# n = 2
-# for i in range(2 ** n):
-#     for j in range(2 ** n):
-#         walter = WalshFunction2D(i, j, n)
-#         walter.plot()

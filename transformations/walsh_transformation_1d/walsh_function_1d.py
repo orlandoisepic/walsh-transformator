@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 from utility import utils as u
 
@@ -67,7 +66,3 @@ class WalshFunction(DiscreteBaseFunction1D):
         :return: The value of the integral of the squared base function on the interval [0,1]ᵈ.
         """
         return 1
-# n = 3
-# for i in range(2 ** n):
-#     walter = WalshFunction(i, n)
-#     walter.plot()
