@@ -75,7 +75,6 @@ class CosineXSquare(TestFunction2D):
 
 class QuadraticAdd(TestFunction2D):
     name = "xy + x"
-    name_cli = name
 
     def evaluate(self, x: float, y: float) -> float:
         return x * y + x
@@ -89,7 +88,6 @@ class QuadraticAdd(TestFunction2D):
 
 class QuadraticMax(TestFunction2D):
     name = "x^2 + y^2 + xy + x + y + 1"
-    name_cli = name
 
     def evaluate(self, x: float, y: float) -> float:
         return x ** 2 + y ** 2 + x * y + x + y + 1
@@ -107,7 +105,6 @@ class QuadraticMax(TestFunction2D):
 
 class QuadraticMid(TestFunction2D):
     name = "xy + x + y + 1"
-    name_cli = name
 
     def evaluate(self, x: float, y: float) -> float:
         return x * y + x + y + 1
@@ -121,7 +118,6 @@ class QuadraticMid(TestFunction2D):
 
 class QuadraticMin(TestFunction2D):
     name = "xy"
-    name_cli = name
 
     def evaluate(self, x: float, y: float) -> float:
         return x * y
@@ -135,7 +131,6 @@ class QuadraticMin(TestFunction2D):
 
 class CubicPolynomial(TestFunction2D):
     name = "-x^3 - y^3 + x^2 + y^2 + xy"
-    name_cli = name
 
     def evaluate(self, x: float, y: float) -> float:
         return -(x ** 3) - (y ** 3) + (x ** 2) + (y ** 2) + (x * y)

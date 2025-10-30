@@ -30,13 +30,12 @@ class TestFunction(ABC):
         pass
 
     @property
-    @abstractmethod
     def name_cli(self) -> str:
         """
         Name of the function, i.e., f(x) = x^2. This is a property of the object.
         This does not use LaTeX syntax to allow display in the command line.
         """
-        pass
+        return self.name
 
     @abstractmethod
     def evaluate(self, *point) -> float | np.ndarray:
@@ -296,14 +295,6 @@ class Image(TestFunction):
 
     @property
     def name(self) -> str:
-        """
-        Name of the image as given by the path ending.
-        :return: The name of the image.
-        """
-        return self._name
-
-    @property
-    def name_cli(self) -> str:
         """
         Name of the image as given by the path ending.
         :return: The name of the image.
