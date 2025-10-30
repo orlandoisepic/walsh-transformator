@@ -19,7 +19,7 @@ If you encounter bugs or have other suggestions or wishes, please open an issue 
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/orlandoisepic/walsh-tranformator
+git clone https://github.com/orlandoisepic/walsh-transformator
 cd walsh-transformator
 ```
 2. Create a new Python Virtual Environment (venv; optional, but recommended):
@@ -100,10 +100,10 @@ Transforms have access to all kinds of methods, such as discarding coefficients 
 
 As the objective of my work was to evaluate Walsh-Functions behaviors, they have a few additional features, to improve their rather wild coefficient decay.
 
-#### Trick
+#### Optimized Selection of Base Functions
 
 Following [this paper](https://doi.org/10.1016/j.jat.2015.12.002), it is possible to define boundaries for the coeficients of Walsh functions. Ordering the coefficients of the base functions according to these boundaries will result in a very smooth coefficient decay.
-This can be taken further, by calculating the boundaries for 2^m (more base functions than will actually be used) and then using the only the first 2^n base functions.
+This can be used further, by calculating the boundaries for 2^m (more base functions than will actually be used) and then using the only the first 2^n base functions.
 Currently, this is implemented through the parameter ```boundary_n``` in the ```__init(...)__``` method of Walsh transformations and the one-dimensional exponential function e^x. 
 For many functions, this results in better approximations than the standard (dyadic or sequential) ordering. 
 
