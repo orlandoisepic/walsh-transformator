@@ -147,10 +147,11 @@ def calc_nu_mu(number: int) -> tuple[int, int]:
     return ones_count, exponent_sum + ones_count
 
 
-def dyadic_to_sequency(n: int) -> list[int]:
+def sequency_to_dyadic(n: int) -> list[int]:
     """
-    Create a sequency ordering of Walsh functions from a dyadic-ordering of them.
+    Create a dyadic ordering of Walsh functions from a sequency-ordering of them.
     This means that at index k of the resulting array will be the dyadic order of sequency-ordered Walsh function k.
+    TL;DR: Use this to obtain dyadic ordering of Walsh functions.
     :param n: 2^n is the number of Walsh functions, i.e., the ordering is from 0 to 2^n-1.
     :return: A list of indices indicating the dyadic ordering of Walsh functions, based on a sequency-ordering.
     """
@@ -165,13 +166,11 @@ def dyadic_to_sequency(n: int) -> list[int]:
     return dyadic_ordering
 
 
-def sequency_to_dyadic(n: int) -> list[int]:
+def dyadic_to_sequency(n: int) -> list[int]:
     """
-    Change ordering of Walsh functions from sequency to dyadic ordering of Walsh functions.
+    Create a sequency ordering of Walsh functions from a dyadic-ordering of them.
     :param n: 2^n is the number of Walsh functions.
     :return: A list with the new ordering of Walsh functions.
-    This means that sequency ordered Walsh function i's dyadic ordering is now result[i].
-    TL;DR: Use this to obtain dyadic ordering of Walsh functions.
     """
     dyadic_ordering = [0 for _ in range(2 ** n)]
     if n == 0:
@@ -257,7 +256,9 @@ def calculate_boundaries_exp(n: int) -> list[float]:
     C_2: int = 2  # constant
     b: int = 2  # base
     # Calculate nu and mu for dyadic ordering, to get the correct bound
-    dyadic_ordering: list[int] = sequency_to_dyadic(n)
+    # We want the sequency ordered bounds, so we need to use dyadic_to_sequency()
+    dyadic_ordering: list[int] = dyadic_to_sequency(n)
+
     # Constants, calculated for f=e^x, as this yields good bounds, close to the actual values
     D: float = np.e - 1
     r: float = 1
@@ -265,11 +266,14 @@ def calculate_boundaries_exp(n: int) -> list[float]:
     boundaries: list[float] = []
     for i in range(2 ** n):
         dyadic_order: int = dyadic_ordering[i]
+
         nu, mu = calc_nu_mu(dyadic_order)
         bound: float = D * (b ** -mu) * ((r / m_2) ** nu) * (C_2 ** min(1, nu))
         boundaries.append(bound)
     return boundaries
 
+
+# calculate_boundaries_exp(3)
 
 def calculate_boundaries_cos(n: int) -> list[float]:
     """
@@ -498,7 +502,6 @@ def plot_nu_mu(n: int) -> None:
     plt.scatter(x, mus, label="$\\mu(k)$", color="green")
     plt.xlabel("$k$")
     plt.legend()
-    # plt.savefig("nu_mu.pdf", dpi=400, pad_inches=0.01)
     plt.show()
 
 
@@ -511,6 +514,7 @@ def create_levelsum_matrix(n: int) -> np.ndarray:
     g = np.fromiter((k.bit_length() for k in range(2 ** n)), dtype=np.int64)
 
     return g[:, None] + g[None, :]
+
 
 def boundary_segments_from_mask(mask):
     """
