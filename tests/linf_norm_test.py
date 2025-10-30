@@ -62,7 +62,7 @@ def test_increasing_linf_norm_image():
     Test that the L∞ norm of the error increases with decreasing coefficients used.
     """
     percentages: list[float] = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    f = Image("images/pyramid.jpg", 32)
+    f = Image("images/small_chungus.png", 32)
     transformations: dict[str, Transformation] = tu.set_up(5, f)
     coefficients: dict[str, np.ndarray] = tu.get_coefficients(transformations)
     linf_error_history: dict[str, list[float]] = {"walsh": [], "wavelet": [], "cosine": []}

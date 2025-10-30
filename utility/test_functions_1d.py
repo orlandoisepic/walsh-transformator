@@ -42,7 +42,6 @@ class Sine(TestFunction1D):
 
 class CubicPolynomialSymmetric(TestFunction1D):
     name = "6x^3 - 9x^2 + 3x"
-    name_cli = name
 
     def evaluate(self, x: float) -> float:
         return 6 * (x ** 3) - 9 * (x ** 2) + 3 * x
@@ -56,7 +55,6 @@ class CubicPolynomialSymmetric(TestFunction1D):
 
 class CubicPolynomial(TestFunction1D):
     name = "x^3 - x^2"
-    name_cli = name
 
     def evaluate(self, x: float) -> float:
         return (x ** 3) - (x ** 2)
@@ -70,10 +68,6 @@ class CubicPolynomial(TestFunction1D):
 
 class Exponential(TestFunction1D):
     name = "e^x"
-    name_cli = "e^x"
-    # with (e-1)/2, the first condition ||f^(n)|| ≤ D r^n is NOT fulfilled
-    D = (np.e - 1)
-    r = 1
 
     def evaluate(self, x: float) -> float:
         return np.exp(x)
@@ -120,7 +114,6 @@ class SineLog(TestFunction1D):
 
 class Cube(TestFunction1D):
     name = "x^3"
-    name_cli = name
 
     def evaluate(self, x: float) -> float:
         return x ** 3
@@ -134,7 +127,6 @@ class Cube(TestFunction1D):
 
 class Line(TestFunction1D):
     name = "x"
-    name_cli = name
 
     def evaluate(self, x: float) -> float:
         return x
@@ -148,7 +140,6 @@ class Line(TestFunction1D):
 
 class QuadraticShift(TestFunction1D):
     name = "2(x-1)^2"
-    name_cli = name
 
     def evaluate(self, x: float) -> float:
         return 2 * ((x - 1) ** 2)
@@ -162,11 +153,6 @@ class QuadraticShift(TestFunction1D):
 
 class Quadratic(TestFunction1D):
     name = "x^2"
-    name_cli = name
-
-    # Constants for bounding coefficient magnitude
-    D = 1 / 2
-    r = 2
 
     def evaluate(self, x: float) -> float:
         # return -2*(x-0.25) ** 2 - x/4
@@ -182,7 +168,6 @@ class Quadratic(TestFunction1D):
 
 class Constant(TestFunction1D):
     name = "1"
-    name_cli = name
 
     def evaluate(self, x: float | np.ndarray) -> float | list[float]:
         if isinstance(x, (float, int)):
@@ -210,7 +195,6 @@ class ExponentialCosine(TestFunction1D):
     def evaluate_integral_squared(self, x: float) -> float:
         return (1 / (4 + 64 * (np.pi ** 2))) * (
                 np.exp(2 * x) * (4 * np.pi * np.sin(8 * np.pi * x) + np.cos(8 * np.pi * x) + (16 * np.pi ** 2 + 1)))
-    # (e^(2 x) (4 π sin(8 π x) + cos(8 π x) + 16 π^2 + 1))/(4 + 64 π^2) + constant
 
 
 class SineExponential(TestFunction1D):
@@ -261,8 +245,8 @@ class HighPolynomial(TestFunction1D):
 
 
 class TaylorCosine(TestFunction1D):
-    name = ""
-    name_cli = ""
+    name = "1 - \\frac{(\pi x)^2}{2} + \\frac{(\pi x)^4}{24} + \\frac{(\pi x)^6}{720} - \\frac{(\pi x)^8}{40320}"
+    name_cli = "1 - 1/2 * (pi*x)^2 + 1/24 * (pi*x)^4 - 1/720 * (pi*x)^6 + 1/40320 * (pi*x)^8"
 
     def evaluate(self, x: float) -> float:
         return 1 - (np.pi ** 2 * x ** 2) / 2 + (np.pi ** 4 * x ** 4) / 24 - (np.pi ** 6 * x ** 6) / 720 + (
@@ -277,8 +261,8 @@ class TaylorCosine(TestFunction1D):
 
 
 class InverseSine(TestFunction1D):
-    name = ""
-    name_cli = ""
+    name = "(\\sin(2 x) + 1.1)^{-1}"
+    name_cli = "1 / (sin(2 x) + 1.1)"
 
     def evaluate(self, x: float) -> float:
         return 1 / (np.sin(2 * x) + 1.1)
@@ -291,7 +275,7 @@ class InverseSine(TestFunction1D):
         SQ21 = np.sqrt(21)
         x = np.asarray(x)
         t = np.tan(x)
-        R = 11.0 * t**2 + 20.0 * t + 11.0
+        R = 11.0 * t ** 2 + 20.0 * t + 11.0
         rational = (10000.0 * t + 11000.0) / (231.0 * R)
         arctan_term = (1100.0 / (21.0 * SQ21)) * np.arctan((11.0 * t + 10.0) / SQ21)
         return rational + arctan_term  # + C

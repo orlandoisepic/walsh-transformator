@@ -245,6 +245,7 @@ function_map_1d: dict[str: tf1d.TestFunction1D] = {
     "exponential-sine": tf1d.ExponentialSine,
     "sine-exponential": tf1d.SineExponential,
     "sine-log": tf1d.SineLog,
+    "inverse-sine": tf1d.InverseSine,
 }
 
 # Maps input strings to TestFunction2D objects (callables) with the corresponding name

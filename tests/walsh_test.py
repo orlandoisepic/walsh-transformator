@@ -16,7 +16,9 @@ def test_walsh_values_1d():
     f = Quadratic()
     n: int = 3
     violet = WalshTransformation(n, f)
-    values: list[list[int]] = violet.base_values
+    values: list[list[int]] = []
+    for phi in violet.base_functions:
+        values.append(phi.values)
 
     assert all((v in [1, -1] for v in vec) for vec in values), "Walsh transformation has other values than +1 and -1."
 
@@ -30,7 +32,8 @@ def test_walsh_coefficients_1d():
     violet = WalshTransformation(n, f)
 
     actual_coefficients: list[float] = violet.get_coefficients_integration_orthonormal()
-    expected_coefficients: list[float] = [1 / 3, -1 / 4, 3 / 48, -3 / 24, 1 / 64, 0, 1 / 32, -1 / 16]
+    expected_coefficients: list[float] = [1 / 3, -1 / 4, -1 / 8, 1 / 16, -1 / 16, 1 / 32, 1 / 64, 0]
+    # [1 / 3, -1 / 4, 3 / 48, -3 / 24, 1 / 64, 0, 1 / 32, -1 / 16]
 
     assert len(actual_coefficients) == len(expected_coefficients), "Length of Walsh coefficients does not match."
 

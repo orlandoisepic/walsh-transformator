@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import math
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
@@ -521,8 +520,8 @@ class Transformation1D(Transformation):
             if sorted:
                 coefficients_to_plot[::-1] = np.sort(abs(np.array(coefficients_to_plot)))
                 subtitle += "\nsorted in descending order"
-            im = ax.plot(range(1, coefficients_to_plot.shape[0] + 1), abs(coefficients_to_plot), color="blue")
-            # ax.plot(5, abs(coefficients_to_plot[0]), marker="x", color="red", markersize=10, label="marked point")
+            im = ax.plot(range(1, coefficients_to_plot.shape[0] + 1), abs(coefficients_to_plot),
+                         color="blue", marker="o", markersize=5)
             plt.ylim(vmin, vmax)
             plt.xscale("log")
             plt.yscale("log")
@@ -531,18 +530,6 @@ class Transformation1D(Transformation):
                           f"$\\displaystyle {self.function.name}$\n"
                           f"with {2 ** self.n} {self.name} functions per dimension" + subtitle)
             ax.set_title(title)
-
-            x = np.linspace(1, coefficients_to_plot.shape[0] + 1, coefficients_to_plot.shape[0], endpoint=False)
-            y = 1 / x ** 2
-            im = ax.plot(x, y, color="red")
-
-            x = np.linspace(1, coefficients_to_plot.shape[0] + 1, coefficients_to_plot.shape[0], endpoint=False)
-            y = 1 / x
-            im = ax.plot(x, y, color="orange")
-
-            x = np.linspace(1, coefficients_to_plot.shape[0] + 1, coefficients_to_plot.shape[0], endpoint=False)
-            y = 1 / x ** 3
-            im = ax.plot(x, y, color="black")
 
             return im, ax
         return None, None
