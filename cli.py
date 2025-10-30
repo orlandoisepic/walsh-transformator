@@ -325,6 +325,7 @@ if __name__ == "__main__":
     theresa.start()
     start_time: float = theresa.start_time
     print(f"Starting program...")
+    u.latex_font()
 
     pearl: Painter = Painter()
 
