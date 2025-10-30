@@ -1,17 +1,14 @@
 import numpy as np
 
 import utility.utils as u
-from utility.templates.base_functions import DiscreteBaseFunction1D, DiscreteBaseFunction2D
+from utility.templates.base_functions import DiscreteBaseFunction1D
 from utility.templates.base_transformations import Transformation1D
-from utility.test_functions_1d import Cosine, Exponential, InverseSine
-from utility.utils import sequency_to_dyadic
 
 if __name__ == "__main__":
     from walsh_function_1d import WalshFunction
 else:
     from .walsh_function_1d import WalshFunction
 from utility.templates.test_functions import TestFunction
-from utility.test_functions_1d import Quadratic
 
 
 class WalshTransformation(Transformation1D):
